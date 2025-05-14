@@ -1,21 +1,34 @@
 "use client";
-
 import { useEffect } from "react";
-import { doc, setDoc } from "firebase/firestore";
-import { db } from "../firebaseConfig";
+import { initializeApp } from "firebase/app";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { getAuth, signInAnonymously } from "firebase/auth";
+import { firebaseConfig } from "../firebaseConfig";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
 export default function Home() {
   useEffect(() => {
-    const testDoc = doc(db, "testCollection", "testDoc");
+    const testFirebase = async () => {
+      try {
+        // Sign in anonymously
+        await signInAnonymously(auth);
+        console.log("Signed in anonymously");
 
-    setDoc(testDoc, { test: "Hello from ShibaRocket" })
-      .then(() => console.log("Successfully wrote to Firestore!"))
-      .catch((error) => console.error("Error writing to Firestore:", error));
+        // Perform Firestore write
+        await setDoc(doc(db, "testCollection", "testDoc"), {
+          test: "Hello from ShibaRocket",
+        });
+        console.log("Successfully wrote to Firestore!");
+      } catch (error) {
+        console.error("Error writing to Firestore:", error.message);
+      }
+    };
+
+    testFirebase();
   }, []);
 
-  return (
-    <div className="flex items-center justify-center h-screen">
-      <h1 className="text-3xl">Check Termux console for Firebase test result!</h1>
-    </div>
-  );
+  return <div>Check browser console for Firebase test result!</div>;
 }
