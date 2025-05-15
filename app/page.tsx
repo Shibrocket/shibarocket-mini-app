@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
-import { getAuth, signInWithEmailAndPassword, FirebaseError } from "firebase/auth"; // Re-add FirebaseError
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth"; // Remove FirebaseError
 import { firebaseConfig } from "../firebaseConfig";
 
 const app = initializeApp(firebaseConfig);
@@ -23,7 +23,8 @@ export default function Home() {
           test: "Hello from ShibaRocket",
         });
         console.log("Successfully wrote to Firestore!");
-      } catch (error: FirebaseError) {
+      } catch (error: any) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         console.error("Error:", error.message);
       }
     };
@@ -50,7 +51,8 @@ export default function Home() {
           try {
             await signInWithEmailAndPassword(auth, email, password);
             console.log("Signed in!");
-          } catch (error: FirebaseError) {
+          } catch (error: any) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             console.error("Login Error:", error.message);
           }
         }}
