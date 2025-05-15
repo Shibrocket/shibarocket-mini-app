@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyCgPHF_po0Xuq0E1hqJHK8GLnuxnDgTDbE",
   authDomain: "shibarocket-tapapp-7538a-e890c.firebaseapp.com",
   projectId: "shibarocket-tapapp-7538a-e890c",
