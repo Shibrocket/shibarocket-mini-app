@@ -23,8 +23,7 @@ export default function Home() {
           test: "Hello from ShibaRocket",
         });
         console.log("Successfully wrote to Firestore!");
-      } catch (error: any) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: Error) {
         console.error("Error:", error.message);
       }
     };
@@ -51,8 +50,7 @@ export default function Home() {
           try {
             await signInWithEmailAndPassword(auth, email, password);
             console.log("Signed in!");
-          } catch (error: any) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } catch (error: Error) {
             console.error("Login Error:", error.message);
           }
         }}
