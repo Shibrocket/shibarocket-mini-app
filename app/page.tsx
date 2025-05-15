@@ -23,8 +23,12 @@ export default function Home() {
           test: "Hello from ShibaRocket",
         });
         console.log("Successfully wrote to Firestore!");
-      } catch (error: Error) {
-        console.error("Error:", error.message);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error("Error:", error.message);
+        } else {
+          console.error("An unknown error occurred");
+        }
       }
     };
 
@@ -50,8 +54,12 @@ export default function Home() {
           try {
             await signInWithEmailAndPassword(auth, email, password);
             console.log("Signed in!");
-          } catch (error: Error) {
-            console.error("Login Error:", error.message);
+          } catch (error: unknown) {
+            if (error instanceof Error) {
+              console.error("Login Error:", error.message);
+            } else {
+              console.error("An unknown error occurred during login.");
+            }
           }
         }}
       >
