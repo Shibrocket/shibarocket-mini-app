@@ -1,71 +1,62 @@
-"use client";
-import { useEffect, useState } from "react";
-import { initializeApp } from "firebase/app";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth"; // Remove FirebaseError
-import { firebaseConfig } from "../firebaseConfig";
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+'use client';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [balance, setBalance] = useState(0);
+  const [energy, setEnergy] = useState(400);
+  const [userId] = useState('test-user');
 
   useEffect(() => {
-    const testFirebase = async () => {
+    const fetchUserData = async () => {
       try {
-        await signInWithEmailAndPassword(auth, "shibarocket72@gmail.com", "Emumena98");
-        console.log("Signed in with Email/Password");
-
-        await setDoc(doc(db, "testCollection", "testDoc"), {
-          test: "Hello from ShibaRocket",
+        const res = await fetch('/api/user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId }),
         });
-        console.log("Successfully wrote to Firestore!");
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error("Error:", error.message);
-        } else {
-          console.error("An unknown error occurred");
+        const data = await res.json();
+        if (data.success) {
+          setBalance(data.shrockBalance || 0);
+          setEnergy(data.energy || 400);
         }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
       }
     };
+    fetchUserData();
+  }, [userId]);
 
-    testFirebase();
-  }, []);
+  const handleTap = async () => {
+    try {
+      const res = await fetch('/api/tap', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setBalance(data.newBalance);
+        setEnergy(data.newEnergy);
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      alert('Error during tap');
+    }
+  };
 
   return (
-    <div>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-      />
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white">
+      <h1 className="text-3xl font-bold mb-4">ShibaRocket</h1>
+      <p>Balance: {balance} $SHROCK</p>
+      <p>Energy: {energy}/500</p>
       <button
-        onClick={async () => {
-          try {
-            await signInWithEmailAndPassword(auth, email, password);
-            console.log("Signed in!");
-          } catch (error: unknown) {
-            if (error instanceof Error) {
-              console.error("Login Error:", error.message);
-            } else {
-              console.error("An unknown error occurred during login.");
-            }
-          }
-        }}
+        onClick={handleTap}
+        className="mt-4 px-6 py-3 bg-neon-green text-black rounded-full shadow-neon disabled:opacity-50"
+        disabled={energy <= 0}
       >
-        Login
+        Tap to Earn
       </button>
-      <p>Check browser console for Firebase test result!</p>
     </div>
   );
 }
