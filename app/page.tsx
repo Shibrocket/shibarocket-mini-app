@@ -19,8 +19,8 @@ export default function Home() {
           setBalance(data.shrockBalance || 0);
           setEnergy(data.energy || 400);
         }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
+      } catch (_) {
+        console.error('Error fetching user data');
       }
     };
     fetchUserData();
@@ -40,7 +40,7 @@ export default function Home() {
       } else {
         alert(data.error);
       }
-    } catch (error) {
+    } catch (_) {
       alert('Error during tap');
     }
   };

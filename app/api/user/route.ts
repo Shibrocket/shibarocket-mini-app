@@ -25,7 +25,7 @@ export async function POST(request: Request) {
       referrals: userData.referrals || [],
       lastReset: userData.lastReset || null,
     });
-  } catch (error) {
+  } catch (_) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

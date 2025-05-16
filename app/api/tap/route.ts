@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       newBalance: userData.shrockBalance + 5,
       newEnergy: userData.energy - 1,
     });
-  } catch (error) {
+  } catch (_) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
